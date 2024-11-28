@@ -1,0 +1,16 @@
+COMMON: &common
+  DEBUG: False
+  SQLALCHEMY_TRACK_MODIFICATIONS: False
+
+development:
+  <<: *common
+  DEBUG: True
+  SQLALCHEMY_DATABASE_URI: 'mysql+pymysql://{0}:{1}@localhost:3306/lab_4'
+
+production:
+  <<: *common
+  SQLALCHEMY_DATABASE_URI: 'mysql+pymysql://{0}:{1}@localhost:3306/lab_4'
+
+ADDITIONAL_CONFIG:
+  MYSQL_ROOT_USER: root
+  MYSQL_ROOT_PASSWORD: Roman2005_
