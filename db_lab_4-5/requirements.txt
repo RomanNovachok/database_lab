@@ -11,3 +11,6 @@ PyYAML
 jsonschema
 redis
 SQLAlchemy==1.4.48
+pymysql==1.1.2
+cryptography==46.0.2
+python-dotenv

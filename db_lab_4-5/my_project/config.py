@@ -1,9 +1,10 @@
 # config.py
 import os
-import yaml
-
 
 def load_config():
-    config_path = os.path.join(os.getcwd(), 'config', 'app.yml')
-    with open(config_path, 'r', encoding='utf-8') as yaml_file:
-        return yaml.load(yaml_file, Loader=yaml.FullLoader)
+    return {
+        "SQLALCHEMY_DATABASE_URI": os.environ.get("DATABASE_URL"),
+        "SECRET_KEY": os.environ.get("SECRET_KEY"),
+        "DEBUG": os.environ.get("DEBUG", "False").lower() == "true",
+        "SQLALCHEMY_TRACK_MODIFICATIONS": False
+    }
