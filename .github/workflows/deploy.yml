@@ -24,7 +24,7 @@ jobs:
           host: ${{ secrets.HOST_NAME }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: "database_lab/*"
+          source: "db_lab-4-5/**"
           target: "/home/${{ secrets.VM_USER }}/project"
           rm: true
 
@@ -35,7 +35,7 @@ jobs:
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd /home/${{ secrets.VM_USER }}/project/database_lab/db_lab_4-5
+            cd /home/${{ secrets.VM_USER }}/project/db_lab_4-5
 
             echo "Building Docker image..."
             docker build -t 1-lab-clouds-app:latest .
