@@ -21,7 +21,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . /app
 
 # Запускаємо gunicorn
-CMD ["gunicorn", "-b", "0.0.0.0:8080", "app:app"]
+CMD ["gunicorn", "-b", "0.0.0.0:8080", "wsgi:app"]
 
 # Додаємо healthcheck (опціонально)
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
