@@ -16,6 +16,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_utils import database_exists, create_database
 
 from my_project.auth.route import register_routes
+from my_project.auth.route.restx_api import register_restx_namespaces
 
 # Database
 db = SQLAlchemy()
@@ -59,7 +60,7 @@ def _init_swagger(app: Flask) -> None:
         doc="/swagger"  # Swagger UI will be available at /swagger
     )  # https://flask-restx.readthedocs.io/
 
-    # Minimal health namespace to have something visible in Swagger
+    # Minimal health namespace
     health_ns = Namespace("health", path="/health", description="Health checks")
 
     @health_ns.route("")
@@ -69,6 +70,9 @@ def _init_swagger(app: Flask) -> None:
             return {"status": "ok"}, HTTPStatus.OK
 
     restx_api.add_namespace(health_ns)
+
+    # Mirror existing blueprints into RESTX namespaces for docs
+    register_restx_namespaces(restx_api)
 
 
 def _init_db(app: Flask) -> None:
