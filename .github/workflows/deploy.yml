@@ -24,7 +24,7 @@ jobs:
           host: ${{ secrets.HOST_NAME }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: "db_lab-4-5/**"
+          source: "db_lab_4-5/**"
           target: "/home/${{ secrets.VM_USER }}/project"
           rm: true
 
