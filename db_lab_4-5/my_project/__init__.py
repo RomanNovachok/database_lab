@@ -54,8 +54,6 @@ def _init_swagger(app: Flask) -> None:
     restx_api = Api(
         app,
         version="1.0",
-        title="Pavelchak Test Backend",
-        description="A simple backend",
         doc="/swagger"  # Swagger UI will be available at /swagger
     )  # https://flask-restx.readthedocs.io/
 
