@@ -16,7 +16,7 @@ if __name__ == '__main__':
     config_data = load_config()
 
     if flask_env == "development":
-        create_app(config_data).run(port=DEVELOPMENT_PORT, debug=debug)
+        create_app(config_data).run(host="0.0.0.0", port=DEVELOPMENT_PORT, debug=debug)
     elif flask_env == "production":
         serve(create_app(config_data), host=HOST, port=PRODUCTION_PORT)
     else:

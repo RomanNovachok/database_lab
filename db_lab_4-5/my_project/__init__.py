@@ -7,6 +7,8 @@ apavelchak@gmail.com
 import secrets
 from http import HTTPStatus
 from typing import Dict, Any
+import os
+
 
 from flask import Flask
 from flask_restx import Api, Resource
@@ -20,6 +22,15 @@ db = SQLAlchemy()
 
 todos = {}
 
+def load_config():
+    return {
+        "SECRET_KEY": os.getenv("SECRET_KEY", "default_secret_key"),
+        "DEBUG": os.getenv("DEBUG", "False").lower() == "true",
+        "SQLALCHEMY_DATABASE_URI": (
+            f"mysql+pymysql://{os.getenv('MYSQL_ROOT_USER')}:{os.getenv('MYSQL_ROOT_PASSWORD')}@localhost/your_database_name"
+        ),
+        "SQLALCHEMY_TRACK_MODIFICATIONS": False,
+    }
 
 def create_app(app_config: Dict[str, Any]) -> Flask:
     """
