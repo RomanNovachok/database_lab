@@ -11,8 +11,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Debug project structure
-        run: ls -R
+      - name: Debug repo structure
+        run: |
+          echo "Current directory:"
+          pwd
+          echo "List files recursively:"
+          ls -R
 
       - name: Copy project files to server
         uses: appleboy/scp-action@v0.1.4
@@ -20,8 +24,9 @@ jobs:
           host: ${{ secrets.HOST_NAME }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: "./database_lab/**/*"
+          source: "database_lab/*"
           target: "/home/${{ secrets.VM_USER }}/project"
+          rm: true
 
       - name: Build and run Docker container on server
         uses: appleboy/ssh-action@v0.1.6
