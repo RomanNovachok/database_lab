@@ -16,7 +16,6 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_utils import database_exists, create_database
 
 from my_project.auth.route import register_routes
-from my_project.auth.route.restx_api import register_restx_namespaces
 
 # Database
 db = SQLAlchemy()
@@ -71,7 +70,8 @@ def _init_swagger(app: Flask) -> None:
 
     restx_api.add_namespace(health_ns)
 
-    # Mirror existing blueprints into RESTX namespaces for docs
+    # Import and register RESTX namespaces lazily to avoid circular imports
+    from my_project.auth.route.restx_api import register_restx_namespaces
     register_restx_namespaces(restx_api)
 
 
