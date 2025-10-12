@@ -16,6 +16,8 @@ from .orders.review_controller import ReviewController
 review_controller = ReviewController()
 from .orders.owner_details_controller import OwnerDetailsController
 owner_details_controller = OwnerDetailsController()
+from .orders.user_controller import UserController
+user_controller = UserController()
 
 
 

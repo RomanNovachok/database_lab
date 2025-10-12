@@ -16,6 +16,8 @@ from .orders.review_service import ReviewService
 review_service = ReviewService()
 from .orders.owner_details_service import OwnerDetailsService
 owner_details_service = OwnerDetailsService()
+from .orders.user_service import UserService
+user_service = UserService()
 
 
 

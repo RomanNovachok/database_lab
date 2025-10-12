@@ -12,6 +12,7 @@ from my_project.auth.domain.orders.amenity import Amenity
 from my_project.auth.domain.orders.property_amenity import PropertyAmenity
 from my_project.auth.domain.orders.review import Review
 from my_project.auth.domain.orders.owner_details import OwnerDetails
+from my_project.auth.domain.orders.user import User
 
 
 #

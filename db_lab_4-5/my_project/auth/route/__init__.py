@@ -22,7 +22,8 @@ def register_routes(app: Flask) -> None:
     app.register_blueprint(review_bp)
     from .orders.owner_details_route import owner_details_bp
     app.register_blueprint(owner_details_bp)
-
+    from .orders.authentification_route import auth_bp
+    app.register_blueprint(auth_bp)
 
 
 

@@ -19,6 +19,8 @@ from .orders.review_dao import ReviewDAO
 review_dao = ReviewDAO()
 from .orders.owner_details_dao import OwnerDetailsDAO
 owner_details_dao = OwnerDetailsDAO()
+from .orders.user_dao import UserDAO
+user_dao = UserDAO()
 
 
 # from .orders.client_dao import ClientDAO
