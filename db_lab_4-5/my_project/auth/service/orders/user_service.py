@@ -1,6 +1,7 @@
 from my_project.auth.dao import user_dao
 from my_project.auth.service.general_service import GeneralService
 
+
 class UserService(GeneralService):
     """
     Realisation of User service.
@@ -9,6 +10,9 @@ class UserService(GeneralService):
 
     def find_by_email(self, email: str):
         """
-        Finds a user by email.
+        Gets User by email.
+        :param email: email value
+        :return: User object
         """
         return self._dao.find_by_email(email)
+
