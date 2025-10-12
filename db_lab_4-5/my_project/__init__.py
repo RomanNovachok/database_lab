@@ -64,7 +64,8 @@ def _init_swagger(app: Flask) -> None:
     class Health(Resource):
         @staticmethod
         def get():
-            return {"status": "ok"}, HTTPStatus.OK
+            # Ми змінили це повідомлення для перевірки CI/CD
+            return {"status": "ok", "message": "Deployment is working! This is the new version."}, HTTPStatus.OK
 
     restx_api.add_namespace(health_ns)
 
