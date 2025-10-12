@@ -11,9 +11,12 @@ from typing import Dict, Any
 from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask_restx import Api, Resource, Namespace
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_utils import database_exists, create_database
-from my_project import db
 from my_project.auth.route import register_routes
+
+# 1. Створюємо екземпляр SQLAlchemy тут, на верхньому рівні
+db = SQLAlchemy()
 
 
 def create_app(app_config: Dict[str, Any]) -> Flask:
@@ -86,6 +89,7 @@ def _init_db(app: Flask) -> None:
     Initializes DB with SQLAlchemy
     :param app: Flask application object
     """
+    # 2. Ініціалізуємо додаток з нашим об'єктом db
     db.init_app(app)
 
     with app.app_context():
