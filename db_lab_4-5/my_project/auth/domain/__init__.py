@@ -6,7 +6,7 @@ apavelchak@gmail.com
 
 # Import here Domain Class that are needed for ORM
 # orders DB
-from my_project.auth.domain.orders.user import User  
+from my_project.auth.domain.orders.user import User
 from my_project.auth.domain.orders.owner import Owner
 from my_project.auth.domain.orders.properties import Property
 from my_project.auth.domain.orders.amenity import Amenity
