@@ -40,7 +40,8 @@ def login():
     user = user_controller.find_by_email(email)
 
     if user and user.check_password(password):
-        access_token = create_access_token(identity=user.id)
+        # Змінено user.id на user.email для створення токена
+        access_token = create_access_token(identity=user.email)
         return jsonify(access_token=access_token), HTTPStatus.OK
 
     return jsonify({"message": "Invalid credentials"}), HTTPStatus.UNAUTHORIZED
