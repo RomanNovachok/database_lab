@@ -41,7 +41,7 @@ def login():
 
     if user and user.check_password(password):
         # Змінено user.id на user.email для створення токена
-        access_token = create_access_token(identity=user.id)
+        access_token = create_access_token(identity=user.email)
         return jsonify(access_token=access_token), HTTPStatus.OK
 
     return jsonify({"message": "Invalid credentials"}), HTTPStatus.UNAUTHORIZED

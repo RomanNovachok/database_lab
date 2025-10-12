@@ -3,34 +3,18 @@
 apavelchak@gmail.com
 © Andrii Pavelchak
 """
-
+import os
 import secrets
 from http import HTTPStatus
 from typing import Dict, Any
-import os
-
 
 from flask import Flask
+from flask_jwt_extended import JWTManager
 from flask_restx import Api, Resource, Namespace
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_utils import database_exists, create_database
-
+from my_project import db
 from my_project.auth.route import register_routes
 
-# Database
-db = SQLAlchemy()
-
-todos = {}
-
-def load_config():
-    return {
-        "SECRET_KEY": os.getenv("SECRET_KEY", "default_secret_key"),
-        "DEBUG": os.getenv("DEBUG", "False").lower() == "true",
-        "SQLALCHEMY_DATABASE_URI": (
-            f"mysql+pymysql://{os.getenv('MYSQL_ROOT_USER')}:{os.getenv('MYSQL_ROOT_PASSWORD')}@localhost/your_database_name"
-        ),
-        "SQLALCHEMY_TRACK_MODIFICATIONS": False,
-    }
 
 def create_app(app_config: Dict[str, Any]) -> Flask:
     """
@@ -42,6 +26,9 @@ def create_app(app_config: Dict[str, Any]) -> Flask:
     app.config["SECRET_KEY"] = secrets.token_hex(16)
     app.config.update(app_config)
 
+    # Initialize JWT
+    jwt = JWTManager(app)
+
     _init_db(app)
     register_routes(app)
     _init_swagger(app)
@@ -50,12 +37,25 @@ def create_app(app_config: Dict[str, Any]) -> Flask:
 
 
 def _init_swagger(app: Flask) -> None:
-    # Swagger / OpenAPI via Flask-RESTX
+    # Authorization scheme for Swagger UI
+    authorizations = {
+        "jwt": {
+            "type": "apiKey",
+            "in": "header",
+            "name": "Authorization",
+            "description": "Type in the *'Value'* input box below: **'Bearer &lt;JWT&gt;'**, where JWT is the token"
+        }
+    }
+
     restx_api = Api(
         app,
         version="1.0",
-        doc="/swagger"  # Swagger UI will be available at /swagger
-    )  # https://flask-restx.readthedocs.io/
+        title="Real Estate API",
+        description="API for managing real estate properties with JWT authentication.",
+        doc="/swagger",
+        authorizations=authorizations,
+        security="jwt"
+    )
 
     # Minimal health namespace
     health_ns = Namespace("health", path="/health", description="Health checks")
@@ -64,12 +64,19 @@ def _init_swagger(app: Flask) -> None:
     class Health(Resource):
         @staticmethod
         def get():
-            # Ми змінили це повідомлення для перевірки CI/CD
-            return {"status": "ok", "message": "Deployment is working! This is the new version."}, HTTPStatus.OK
+            # Diagnostic check for the JWT secret key
+            secret_key_from_config = app.config.get("JWT_SECRET_KEY")
+            is_secret_set = bool(secret_key_from_config)
+            
+            return {
+                "status": "ok",
+                "message": "Deployment is working! This is the new version.",
+                "jwt_secret_is_set": is_secret_set
+            }, HTTPStatus.OK
 
     restx_api.add_namespace(health_ns)
 
-    # Import and register RESTX namespaces lazily to avoid circular imports
+    # Import and register RESTX namespaces
     from my_project.auth.route.restx_api import register_restx_namespaces
     register_restx_namespaces(restx_api)
 
@@ -81,9 +88,11 @@ def _init_db(app: Flask) -> None:
     """
     db.init_app(app)
 
-    if not database_exists(app.config["SQLALCHEMY_DATABASE_URI"]):
-        create_database(app.config["SQLALCHEMY_DATABASE_URI"])
-
-    import my_project.auth.domain
     with app.app_context():
+        if not database_exists(app.config["SQLALCHEMY_DATABASE_URI"]):
+            create_database(app.config["SQLALCHEMY_DATABASE_URI"])
+
+        # Import all models here so that SQLAlchemy can see them
+        import my_project.auth.domain
         db.create_all()
+
