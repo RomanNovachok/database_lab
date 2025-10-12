@@ -11,21 +11,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Debug repo structure
-        run: |
-          echo "Current directory:"
-          pwd
-          echo "List files recursively:"
-          ls -R
-
       - name: Copy project files to server
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.HOST_NAME }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: "db_lab_4-5/**"
+          source: "db_lab_4-5/"
           target: "/home/${{ secrets.VM_USER }}/project"
+          strip_components: 1
           rm: true
 
       - name: Build and run Docker container on server
@@ -35,7 +29,7 @@ jobs:
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd /home/${{ secrets.VM_USER }}/project/db_lab_4-5
+            cd /home/${{ secrets.VM_USER }}/project
 
             echo "Building Docker image..."
             docker build -t 1-lab-clouds-app:latest .
@@ -47,9 +41,19 @@ jobs:
             echo "Running new container..."
             docker run -d -p 8080:8080 \
               --name 1-lab-clouds-app \
+              --restart always \
               -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
+              -e MYSQL_ROOT_USER=${{ secrets.MYSQL_ROOT_USER }} \
+              -e MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }} \
+              -e DB_HOST=${{ secrets.DB_HOST }} \
+              -e DB_NAME=${{ secrets.DB_NAME }} \
               1-lab-clouds-app:latest
 
+            echo "Waiting for container to start..."
+            sleep 15
+
+            echo "Checking container logs..."
+            docker logs 1-lab-clouds-app
+
             echo "Checking container health..."
-            sleep 5
             docker inspect --format='{{.State.Health.Status}}' 1-lab-clouds-app
