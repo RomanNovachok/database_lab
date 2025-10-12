@@ -195,6 +195,8 @@ def register_restx_namespaces(api) -> None:
 
     @prop_amen_ns.route("")
     class PropertyAmenities(Resource):
+        @owners_ns.doc(security='jwt')
+        @jwt_required()
         def get(self):
             return property_amenity_controller.find_all(), HTTPStatus.OK
 
