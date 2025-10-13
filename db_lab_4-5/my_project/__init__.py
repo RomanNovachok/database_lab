@@ -53,8 +53,8 @@ def _init_swagger(app: Flask) -> None:
     restx_api = Api(
         app,
         version="1.0",
-        title="Real Estate API",
-        description="API for managing real estate properties with JWT authentication.",
+        # title="Real Estate API",
+        # description="API for managing real estate properties with JWT authentication.",
         doc="/swagger",
         authorizations=authorizations,
         security="jwt"
