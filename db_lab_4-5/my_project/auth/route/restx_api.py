@@ -110,11 +110,7 @@ def register_restx_namespaces(api) -> None:
         def get(self, owner_id: int):
             return owner_controller.find_by_id(owner_id), HTTPStatus.OK
 
-        # def put(self, owner_id: int):
-        #     content = request.get_json()
-        #     owner = Owner.create_from_dto(content)
-        #     owner_controller.update(owner_id, owner)
-        #     return {"message": "Owner updated"}, HTTPStatus.OK
+
 
         def delete(self, owner_id: int):
             owner_controller.delete(owner_id)
