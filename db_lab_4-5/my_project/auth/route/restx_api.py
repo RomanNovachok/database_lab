@@ -294,11 +294,11 @@ def register_restx_namespaces(api) -> None:
             result = owner_details_controller.get_by_owner_id(owner_id)
             return (result, HTTPStatus.OK) if result else ("Not Found", HTTPStatus.NOT_FOUND)
 
-        def put(self, owner_id: int):
-            content = request.get_json()
-            details = OwnerDetails.create_from_dto(content)
-            owner_details_controller.update(owner_id, details)
-            return {"message": "OwnerDetails updated"}, HTTPStatus.OK
+        # def put(self, owner_id: int):
+        #     content = request.get_json()
+        #     details = OwnerDetails.create_from_dto(content)
+        #     owner_details_controller.update(owner_id, details)
+        #     return {"message": "OwnerDetails updated"}, HTTPStatus.OK
 
         def delete(self, owner_id: int):
             owner_details_controller.delete(owner_id)
