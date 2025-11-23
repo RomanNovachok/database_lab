@@ -15,3 +15,30 @@ variable "project_name" {
   type        = string
   default     = "database-lab"
 }
+
+variable "db_host" {
+  description = "RDS endpoint host"
+  type        = string
+}
+
+variable "db_name" {
+  description = "Database name"
+  type        = string
+}
+
+variable "mysql_root_user" {
+  description = "MySQL user"
+  type        = string
+}
+
+variable "mysql_root_password" {
+  description = "MySQL password"
+  type        = string
+  sensitive   = true
+}
+
+variable "jwt_secret" {
+  description = "JWT secret"
+  type        = string
+  sensitive   = true
+}

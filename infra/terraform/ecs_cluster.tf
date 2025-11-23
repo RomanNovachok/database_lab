@@ -17,7 +17,7 @@ resource "aws_security_group" "app" {
   description = "Security group for ECS Fargate service"
   vpc_id      = data.aws_vpc.default.id
 
-  # Дозволяємо HTTP-трафік на порт 8080 ззовні (для лаби ок)
+  # HTTP 8080 (прямий доступ до контейнера, якщо треба)
   ingress {
     description = "HTTP app port"
     from_port   = 8080
@@ -26,13 +26,14 @@ resource "aws_security_group" "app" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # Можна додати ще 80, якщо захочеш пізніше
-  # ingress {
-  #   from_port   = 80
-  #   to_port     = 80
-  #   protocol    = "tcp"
-  #   cidr_blocks = ["0.0.0.0/0"]
-  # }
+  # HTTP 80 (для ALB)
+  ingress {
+    description = "HTTP via ALB"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   egress {
     from_port   = 0
@@ -41,6 +42,7 @@ resource "aws_security_group" "app" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
 
 # ECS кластер
 resource "aws_ecs_cluster" "app" {
@@ -73,3 +75,4 @@ output "ecs_security_group_id" {
   description = "Security group ID for ECS service"
   value       = aws_security_group.app.id
 }
+

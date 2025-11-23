@@ -1,11 +1,11 @@
-name: Build & Push Load Tester to ECR
+name: Build & Push load tester image
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "load_tester/**"
-      - ".github/workflows/load-tester-build.yml"
+  workflow_dispatch:
+
+env:
+  AWS_REGION: eu-north-1
+  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
 
 jobs:
   build-and-push:
@@ -20,17 +20,20 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build & Push load tester image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }} # у тебе це вже є (database-lab-app)
-          IMAGE_TAG: load-tester
+      - name: Build load tester image
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./load_tester
+          IMAGE_TAG=load-tester
+          ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG load_tester
+
+      - name: Push load tester image
+        run: |
+          IMAGE_TAG=load-tester
+          ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG

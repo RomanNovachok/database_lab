@@ -91,3 +91,5 @@ venv/
 # IDE
 .idea/
 .vscode/
+
+infra/terraform/*.tfvars
