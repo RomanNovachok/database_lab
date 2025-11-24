@@ -1,42 +1,17 @@
-import os
-import time
-import threading
 import requests
+import time
 
-TARGET_URL = os.getenv("TARGET_URL")
-
-if not TARGET_URL:
-    raise RuntimeError("TARGET_URL env var is not set")
-
-CONCURRENCY = int(os.getenv("CONCURRENCY", "20"))
-DELAY_BETWEEN_BATCHES = float(os.getenv("DELAY_BETWEEN_BATCHES", "0.2"))  # сек
-
-
-def worker(idx: int):
-    session = requests.Session()
-    i = 0
-    while True:
-        try:
-            resp = session.get(TARGET_URL, timeout=5)
-            print(f"[{idx}] #{i} {resp.status_code}")
-        except Exception as e:
-            print(f"[{idx}] ERROR: {e}")
-        i += 1
-
+BASE_URL = "http://database-lab-alb-944510320.eu-north-1.elb.amazonaws.com"  # 🔴 свій ALB
 
 def main():
-    print(f"Starting load to {TARGET_URL} with {CONCURRENCY} workers")
-    threads = []
-    for i in range(CONCURRENCY):
-        t = threading.Thread(target=worker, args=(i,), daemon=True)
-        threads.append(t)
-        t.start()
-        time.sleep(DELAY_BETWEEN_BATCHES)  # плавний старт
-
-    # просто спимо вічно, потоки працюють у фоні
+    print(f"Start sending load to {BASE_URL}")
     while True:
-        time.sleep(60)
-
+        try:
+            resp = requests.get(BASE_URL + "/health", timeout=5)
+            print("Health:", resp.status_code)
+        except Exception as e:
+            print("ERROR:", e)
+        time.sleep(0.2)
 
 if __name__ == "__main__":
     main()
